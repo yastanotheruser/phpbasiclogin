@@ -1,10 +1,39 @@
 <?php
 
-const PG_CONNECTION_STRING = 'host=localhost dbname=side user=postgres password=postgres';
+const DB_DEFAULTS = [
+  'host' => 'localhost',
+  'port' => '5432',
+  'dbname' => 'postgres',
+  'user' => 'postgres',
+  'password' => 'postgres',
+];
 
 function make_pg_connection()
 {
-  return pg_connect(PG_CONNECTION_STRING);
+  if (!($_config = parse_ini_file('db.ini'))) {
+    $_config = [];
+  }
+
+  $config = [];
+  foreach (array_keys(DB_DEFAULTS) as $param) {
+    $v = array_key_exists($param, $_config)
+      ? $_config[$param]
+      : DB_DEFAULTS[$param];
+    $v = str_replace('\\', '\\\\', $v);
+    $v = str_replace(' ', '\\ ', $v);
+    $config[$param] = $v;
+  }
+
+  return pg_connect(
+    sprintf(
+      'host=%s port=%s dbname=%s user=%s password=%s',
+      $config['host'],
+      $config['port'],
+      $config['dbname'],
+      $config['user'],
+      $config['password']
+    )
+  );
 }
 
 function getuserbylogin($dbconn, string $login)
