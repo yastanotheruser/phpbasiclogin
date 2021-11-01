@@ -31,6 +31,7 @@ if (isset($_COOKIE['token'])) {
 }
 
 $error = get_friendly_error_message();
+$title = $user !== null ? 'Inicio' : 'Login';
 
 ?>
 <!DOCTYPE html>
@@ -38,7 +39,7 @@ $error = get_friendly_error_message();
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login</title>
+    <title><?php echo htmlspecialchars($title); ?></title>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/foundation-sites@6.7.3/dist/css/foundation.min.css"

@@ -1,39 +1,21 @@
 <?php
 
-const DB_DEFAULTS = [
-  'host' => 'localhost',
-  'port' => '5432',
-  'dbname' => 'postgres',
-  'user' => 'postgres',
-  'password' => 'postgres',
-];
+require_once 'config.php';
 
 function make_pg_connection()
 {
-  if (!($_config = parse_ini_file('db.ini'))) {
-    $_config = [];
-  }
-
-  $config = [];
-  foreach (array_keys(DB_DEFAULTS) as $param) {
-    $v = array_key_exists($param, $_config)
-      ? $_config[$param]
-      : DB_DEFAULTS[$param];
-    $v = str_replace('\\', '\\\\', $v);
-    $v = str_replace(' ', '\\ ', $v);
-    $config[$param] = $v;
-  }
-
-  return pg_connect(
-    sprintf(
-      'host=%s port=%s dbname=%s user=%s password=%s',
-      $config['host'],
-      $config['port'],
-      $config['dbname'],
-      $config['user'],
-      $config['password']
-    )
+  $conn_string_params = array_map(
+    function (string $p) {
+      global $config;
+      $v = $config['postgres'][$p];
+      $v = str_replace('\\', '\\\\', $v);
+      $v = str_replace(' ', '\\ ', $v);
+      return "$p=$v";
+    },
+    ['host', 'port', 'dbname', 'user', 'password']
   );
+
+  return pg_connect(implode(' ', $conn_string_params));
 }
 
 function getuserbylogin($dbconn, string $login)
