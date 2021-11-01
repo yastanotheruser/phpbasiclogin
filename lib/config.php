@@ -17,13 +17,13 @@ $CONFIG_DEFAULTS = [
 
 $config = parse_ini_file('config.ini', true);
 if ($config) {
-  array_replace_recursive($CONFIG_DEFAULTS, $config);
+  $config = array_replace_recursive($CONFIG_DEFAULTS, $config);
 } else {
   $config = $CONFIG_DEFAULTS;
 }
 
 if (!isset($config['jwt']['key'])) {
-  $config['jwt'] = hex2bin($config['jwt']['hexkey']);
+  $config['jwt']['key'] = hex2bin($config['jwt']['hexkey']);
 }
 
 ?>

@@ -19,6 +19,7 @@ function make_token(int $uid): string
       'exp' => time() + 24 * 60 * 60,
     ],
     $config['jwt']['key'],
+    $config['jwt']['algorithm']
   );
 }
 
@@ -29,7 +30,9 @@ function read_token(string $token, bool &$ok)
 
   try {
     $ok = true;
-    return JWT::decode($token, $config['jwt']['key'], ['HS256']);
+    return JWT::decode($token, $config['jwt']['key'], [
+      $config['jwt']['algorithm'],
+    ]);
   } catch (SignatureInvalidException | ExpiredException $e) {
     return null;
   }
