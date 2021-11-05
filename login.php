@@ -2,16 +2,12 @@
 
 require_once 'lib/error.php';
 require_once 'lib/db.php';
-require_once 'lib/jwt.php';
+require_once 'lib/session.php';
 
 allow_methods(['POST']);
 
 header('Location: .', true, 303);
 clear_error();
-
-if (isset($_COOKIE['token'])) {
-  setcookie('token', false);
-}
 
 $login = isset($_POST['login']) ? trim($_POST['login']) : null;
 if (!$login) {
@@ -39,9 +35,6 @@ if (!password_verify($password, $user['password'])) {
   return set_error('BAD_LOGIN');
 }
 
-setcookie('token', make_token($user['id']), [
-  'httponly' => true,
-  'samesite' => 'Strict',
-]);
+$_SESSION['user'] = $user['id'];
 
 ?>

@@ -1,14 +1,12 @@
 <?php
 
 require_once 'lib/error.php';
+require_once 'lib/session.php';
 
 allow_methods(['POST']);
 
 header('Location: .', true, 303);
-clear_error();
 
-if (isset($_COOKIE['token'])) {
-  setcookie('token', false);
-}
+session_destroy();
 
 ?>

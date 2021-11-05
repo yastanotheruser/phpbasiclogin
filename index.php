@@ -2,34 +2,12 @@
 
 require_once 'lib/error.php';
 require_once 'lib/db.php';
-require_once 'lib/jwt.php';
+require_once 'lib/session.php';
 
 allow_methods(['GET']);
 
 $dbconn = make_pg_connection();
-$user = null;
-
-if (isset($_COOKIE['token'])) {
-  $ok = false;
-  $token = $_COOKIE['token'];
-  $decoded = read_token($token, $ok);
-
-  if ($ok) {
-    if (isset($decoded->user)) {
-      $user = getuserbyid($dbconn, $decoded->user);
-      if ($user === null) {
-        $ok = false;
-      }
-    } else {
-      $ok = false;
-    }
-  }
-
-  if (!$ok) {
-    setcookie('token', false);
-  }
-}
-
+$user = get_login_user($dbconn);
 $error = get_friendly_error_message();
 $title = $user !== null ? 'Inicio' : 'Login';
 

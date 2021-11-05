@@ -57,33 +57,24 @@ function allow_methods(array $methods)
 function set_error(string $error)
 {
   if (array_key_exists($error, ERROR_MESSAGES)) {
-    setcookie('error_message', ERROR_MESSAGES[$error], [
-      'httponly' => true,
-      'samesite' => 'Strict',
-    ]);
-    setcookie('error_code', $error, [
-      'httponly' => true,
-      'samesite' => 'Strict',
-    ]);
+    $_SESSION['error_message'] = ERROR_MESSAGES[$error];
+    $_SESSION['error_code'] = $error;
   } else {
-    setcookie('error_message', $error, [
-      'httponly' => true,
-      'samesite' => 'Strict',
-    ]);
+    $_SESSION['error_message'] = $error;
   }
 }
 
 function get_friendly_error_message()
 {
-  if (isset($_COOKIE['error_code'])) {
-    $code = $_COOKIE['error_code'];
+  if (isset($_SESSION['error_code'])) {
+    $code = $_SESSION['error_code'];
     if (array_key_exists($code, ERROR_FRIENDLY_MESSAGES)) {
       return ERROR_FRIENDLY_MESSAGES[$code];
     }
   }
 
-  if (!isset($error) && isset($_COOKIE['error_message'])) {
-    return $_COOKIE['error_message'];
+  if (!isset($error) && isset($_SESSION['error_message'])) {
+    return $_SESSION['error_message'];
   }
 
   return null;
@@ -91,13 +82,8 @@ function get_friendly_error_message()
 
 function clear_error()
 {
-  if (isset($_COOKIE['error_message'])) {
-    setcookie('error_message', false);
-  }
-
-  if (isset($_COOKIE['error_code'])) {
-    setcookie('error_code', false);
-  }
+  unset($_SESSION['error_message']);
+  unset($_SESSION['error_code']);
 }
 
 ?>

@@ -8,10 +8,10 @@ $CONFIG_DEFAULTS = [
     'user' => 'postgres',
     'password' => 'postgres',
   ],
-  'jwt' => [
-    'key' => null,
-    'hexkey' => 'deadbeef',
-    'algorithm' => 'HS256',
+  'session' => [
+    'save_handler' => 'files',
+    'cookie_httponly' => 'true',
+    'cookie_samesite' => 'Strict',
   ],
 ];
 
@@ -20,10 +20,6 @@ if ($config) {
   $config = array_replace_recursive($CONFIG_DEFAULTS, $config);
 } else {
   $config = $CONFIG_DEFAULTS;
-}
-
-if (!isset($config['jwt']['key'])) {
-  $config['jwt']['key'] = hex2bin($config['jwt']['hexkey']);
 }
 
 ?>
